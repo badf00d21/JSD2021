@@ -82,7 +82,7 @@ define Record (
     allItems ref [InventoryItem]
 )
 
-define BookDimension (
+draft BookDimension (
     height of Long
     width of Long
 )
