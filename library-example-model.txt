@@ -1,0 +1,47 @@
+define Library (
+    name of String
+    state of String
+    city of String
+    postalCode of String
+    type of String
+    isPublic of boolean
+    isSchool of boolean
+    isUniversity of boolean
+)
+
+define Librarian (
+    firstName of String
+    lastName of String
+    age of int
+    idNumber of String
+    worksIn ref Library
+    reoles of [String]
+)
+
+define Record (
+    type of String
+    title of String
+    author of String
+    genre of String
+    publisher of String
+    pubYear of int
+    pubPlace of String
+    dimensions of BookDimension
+    createdBy ref Librarian
+    lastModifiedBy ref Librarian
+    allItems ref [InventoryItem]
+)
+
+draft BookDimension (
+    height of Long
+    width of Long
+)
+
+define InventoryItem (
+    inventoryNumber of String
+    signatures of String
+    record ref Record
+    isBorrowed of boolean
+)
+
+
