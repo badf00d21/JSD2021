@@ -1,0 +1,29 @@
+Project:
+    defModel=DefinitionModel
+;
+
+DefinitionModel:
+    types*=BaseType
+    definitions+=Definition
+;
+
+Definition:
+    ('define' | 'draft') name=ID '('
+        attributes+=Attribute
+    ')'
+;
+
+
+Attribute:
+   name=ID  ('ref' | 'of') ((type=[Type]) | ('['type=[Type]']'))
+;
+
+BaseType:
+    'type' name=ID
+;
+
+Type:
+    Definition | BaseType
+;
+
+
