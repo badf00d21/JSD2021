@@ -15,15 +15,15 @@ define Librarian (
     age of int
     idNumber of String
     worksIn ref Library
-    reoles of [String]
+    roles of [String]
 )
 
 define Record (
     type of String
     title of String
-    author of String
+    authors of String
     genre of String
-    publisher of String
+    publisher of [String]
     pubYear of int
     pubPlace of String
     dimensions of BookDimension
@@ -43,5 +43,3 @@ define InventoryItem (
     record ref Record
     isBorrowed of boolean
 )
-
-

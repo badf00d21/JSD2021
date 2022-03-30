@@ -8,14 +8,21 @@ DefinitionModel:
 ;
 
 Definition:
-    ('define' | 'draft') name=ID '('
+    definitionType=DefinitionType name=ID '('
         attributes+=Attribute
     ')'
 ;
 
+DefinitionType:
+    'define' | 'draft'
+;
 
 Attribute:
-   name=ID  ('ref' | 'of') ((type=[Type]) | ('['type=[Type]']'))
+   name=ID  relationType=AttributeRelationType ((type=[Type]) | ('['collectionType=[Type]']'))
+;
+
+AttributeRelationType:
+    'ref' | 'of'
 ;
 
 BaseType:
@@ -26,4 +33,6 @@ Type:
     Definition | BaseType
 ;
 
-
+CollectionRule:
+    '^\[.+\]$'
+;
