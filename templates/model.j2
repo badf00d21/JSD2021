@@ -1,0 +1,47 @@
+// TODO: package, import ref from packages
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+{% if model.definitionType == 'define' %}
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+{% endif %}
+{% if model | has_collection %}
+import java.util.ArrayList;
+import java.util.List;
+{% endif %}
+{% if model | has_ref %}
+import org.springframework.data.mongodb.core.mapping.DBRef;
+{% endif %}
+
+/**
+ * @author {{ projectGeneralInfo.author }} {{ projectGeneralInfo.date }}
+ */
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+{% if model.definitionType == 'define' %}
+@Document(collection = "{{ model.name.lower() }}")
+{% endif %}
+public class {{model.name}} {
+
+    {% if model.definitionType == 'define' %}
+    @Id()
+    private String _id;
+    {% endif %}
+    {% for att in model.attributes%}
+        {% if att.relationType == 'ref' %}
+    @DBRef
+        {% endif %}
+        {% if att.type %}
+    private {{att.type.name}} {{att.name}};
+        {% endif %}
+        {% if att.collectionType %}
+    private List<{{att.collectionType.name}}> {{att.name}} = new ArrayList<>();
+        {% endif %}
+    {% endfor %}
+
+}
