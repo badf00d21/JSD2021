@@ -1,0 +1,78 @@
+package {{projectGeneralInfo.packageRoot}}.generated.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import java.util.Properties;
+
+
+/**
+ * @author {{ projectGeneralInfo.author }} - {{ projectGeneralInfo.date }}
+ *
+ */
+
+// TODO: Please note this class is generated also, so you should probably add stuff...
+
+@Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableSwagger2
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+//    @Override
+//    public AuthenticationManager authenticationManagerBean() throws Exception {
+//        return super.authenticationManagerBean();
+//    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception
+    {
+        http.httpBasic().disable();
+
+        http
+            // communication between client and server is stateless
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+            .authorizeRequests()
+            .anyRequest()
+            .permitAll();
+        http.csrf().disable();
+
+    }
+
+    // TODO: go to: host/api/swagger-ui/ in browser
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers( "/v2/api-docs", "/configuration/ui", "/swagger-resources/**",
+                "/configuration/security", "/swagger-ui.html", "/webjars/**");
+    }
+
+    @Bean
+    public PasswordEncoder getPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public Docket api() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.any())
+                .paths(PathSelectors.any())
+                .build();
+    }
+
+}
+
+
