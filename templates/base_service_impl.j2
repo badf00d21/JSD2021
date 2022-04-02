@@ -1,0 +1,117 @@
+package {{ model | get_package_path('service') }};
+
+import java.util.List;
+import java.util.Optional;
+
+import com.mongodb.MongoException;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.ExampleMatcher.StringMatcher;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * @author {{ projectGeneralInfo.author }} - {{ projectGeneralInfo.date }}
+ */
+
+@Service
+@Transactional
+public abstract class BaseServiceImpl<T> implements BaseService<T> {
+    private MongoRepository<T, String> baseRepository;
+
+    public BaseServiceImpl(MongoRepository<T, String> baseRepository) {
+        this.baseRepository = baseRepository;
+    }
+
+
+    public MongoRepository<T, String> getBaseRepository() {
+        return this.baseRepository;
+    }
+
+    public void setBaseRepository(MongoRepository<T, String> baseRepository) {
+        this.baseRepository = baseRepository;
+    }
+
+    @Transactional(
+            propagation = Propagation.REQUIRED,
+            readOnly = true
+    )
+    public Page<T> findAll(Pageable page) {
+        Page<T> retPage = this.baseRepository.findAll(page);
+        return retPage;
+    }
+
+    @Transactional
+    public T findOne(String id) {
+        try {
+            Optional<T> t = this.baseRepository.findById(id);
+            if (!t.isPresent()) {
+                throw new ResourceNotFoundException("Could not find entity with id " + id + ".");
+            } else {
+                return (T)t.get();
+            }
+        } catch (Exception var3) {
+            var3.printStackTrace();
+            throw new ResourceNotFoundException("Could not find entity with id " + id + ".");
+        }
+    }
+
+    @Transactional(
+            propagation = Propagation.REQUIRED
+    )
+    public T create(T entity) {
+        try {
+            return (T)this.baseRepository.save(entity);
+        } catch (IllegalArgumentException var3) {
+            var3.printStackTrace();
+            throw new MongoException("Error ocured while trying to add new entity.");
+        }
+    }
+
+    @Transactional(
+            propagation = Propagation.REQUIRED
+    )
+    public T update(T entity) {
+        try {
+            return (T)this.baseRepository.save(entity);
+        } catch (IllegalArgumentException var3) {
+            throw new MongoException("Error ocured while trying to update entity with id " + entity.toString() + ".");
+        }
+    }
+
+    @Transactional(
+            propagation = Propagation.REQUIRED
+    )
+    public void delete(String id) {
+        try {
+            T entitet = this.findOne(id);
+
+            if (entitet != null) {
+                this.baseRepository.deleteById(id);
+            }
+        } catch (IllegalArgumentException var3) {
+            throw new MongoException("Can't delete entity with id " + id + ".");
+        }
+    }
+
+    public Page<T> findByExample(T entity, Pageable pageable) {
+        ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING).withIgnoreCase();
+        Example<T> example = Example.of(entity, matcher);
+        return this.baseRepository.findAll(example, pageable);
+    }
+
+    public List<T> findByExample(T entity) {
+        ExampleMatcher matcher = ExampleMatcher.matching().withStringMatcher(StringMatcher.CONTAINING).withIgnoreCase();
+        if (entity == null) {
+            return this.baseRepository.findAll();
+        } else {
+            Example<T> example = Example.of(entity, matcher);
+            return this.baseRepository.findAll(example);
+        }
+    }
+}

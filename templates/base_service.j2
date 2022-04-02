@@ -1,0 +1,26 @@
+package {{ model | get_package_path('service') }};
+
+import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+/**
+ * @author {{ projectGeneralInfo.author }} - {{ projectGeneralInfo.date }}
+ */
+
+public interface BaseService<T> {
+    Page<T> findAll(Pageable page);
+
+    T findOne(String id);
+
+    T update(T entity);
+
+    T create(T entity);
+
+    void delete(String id);
+
+    List<T> findByExample(T entity);
+
+    Page<T> findByExample(T entity, Pageable pageable);
+
+}

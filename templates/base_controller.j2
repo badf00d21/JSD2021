@@ -1,0 +1,185 @@
+package {{ model | get_package_path('controller') }};
+
+import com.badf00d21.springbootmongogenerated.generated.service.BaseService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+import javax.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+/**
+ * @author {{ projectGeneralInfo.author }} - {{ projectGeneralInfo.date }}
+ */
+
+public class BaseController<T> {
+
+    private BaseService<T> baseService;
+
+    public BaseController() {}
+
+    public void setBaseService(BaseService<T> baseService) {
+        this.baseService = baseService;
+    }
+
+
+    @RequestMapping(
+            method = {RequestMethod.GET},
+            produces = {"application/json"}
+    )
+    @ApiResponses({@ApiResponse(
+            code = 401,
+            message = "Unauthorized."
+    )})
+    @ApiImplicitParams({@ApiImplicitParam(
+            name = "pageNumber",
+            dataType = "integer",
+            paramType = "query",
+            value = "Page that is shown from 0 to total pages number."
+    ), @ApiImplicitParam(
+            name = "pageSize",
+            dataType = "integer",
+            paramType = "query",
+            value = "Elements count on page."
+    ), @ApiImplicitParam(
+            name = "sort",
+            allowMultiple = true,
+            dataType = "string",
+            paramType = "query",
+            value = "Sort ASC or DESC. "
+    )})
+    public Page<T> findAll(Pageable pageable) {
+        Page<T> page = this.baseService.findAll(pageable);
+        return page;
+    }
+
+    @ApiResponses({@ApiResponse(
+            code = 401,
+            message = "Unauthorized."
+    ), @ApiResponse(
+            code = 404,
+            message = "Can not find entity with id."
+    )})
+    @ApiImplicitParams({@ApiImplicitParam(
+            name = "id",
+            value = "Id of entity needed to be found."
+    )})
+    @RequestMapping(
+            path = {"/{id}"},
+            method = {RequestMethod.GET}
+    )
+    public T findOne(@PathVariable String id) {
+        return (T)this.baseService.findOne(id);
+    }
+
+    @ApiResponses({@ApiResponse(
+            code = 401,
+            message = "Unauthorized."
+    ), @ApiResponse(
+            code = 500,
+            message = "Error ocured while trying to save entity."
+    )})
+    @RequestMapping(
+            method = {RequestMethod.POST}
+    )
+    public T create(@RequestBody(required = true) @Valid T t) {
+        return (T)this.baseService.create(t);
+    }
+
+    @ApiResponses({@ApiResponse(
+            code = 400,
+            message = "Entity with this id alredy exist."
+    ), @ApiResponse(
+            code = 401,
+            message = "Unauthorized."
+    ), @ApiResponse(
+            code = 500,
+            message = "Error ocured while trying to update entity with id."
+    )})
+    @ApiImplicitParams({@ApiImplicitParam(
+            name = "id",
+            value = "Id of the entity to update."
+    )})
+    @RequestMapping(
+            path = {"/{id}"},
+            method = {RequestMethod.PUT}
+    )
+    public T update(@PathVariable String id, @RequestBody(required = true) @Valid T t) {
+        setIdOnObject(t, id, t.getClass());
+        return (T)this.baseService.update(t);
+    }
+
+    @ApiResponses({@ApiResponse(
+            code = 200,
+            message = "Deleted"
+    ), @ApiResponse(
+            code = 401,
+            message = "Unauthorized."
+    ), @ApiResponse(
+            code = 500,
+            message = "Can not delete entity with id."
+    )})
+    @ApiImplicitParams({@ApiImplicitParam(
+            name = "id",
+            value = "Id of document that is going to be deleted."
+    )})
+    @RequestMapping(
+            path = {"/{id}"},
+            method = {RequestMethod.DELETE}
+    )
+    public String delete(@PathVariable(required = true) String id) {
+        this.baseService.delete(id);
+        return "Sucessfully deleted";
+    }
+
+    @ApiResponses({@ApiResponse(
+            code = 401,
+            message = "Unauthorized."
+    )})
+    @RequestMapping(
+            path = {"/example"},
+            method = {RequestMethod.POST}
+    )
+    public Page<T> byExample(@RequestBody(required = true) T sifarnik, Pageable page) {
+        return (this.baseService.findByExample(sifarnik, page));
+    }
+
+    @ApiResponses({@ApiResponse(
+            code = 401,
+            message = "Unauthorized."
+    )})
+    @RequestMapping(
+            path = {"/exampleAll"},
+            method = {RequestMethod.POST}
+    )
+    public List<T> byExampleAll(@RequestBody(required = false) T sifarnik) {
+        return this.baseService.findByExample(sifarnik);
+    }
+
+    public static void setIdOnObject(Object obj, String id, Class<?> targetClass) {
+        Method[] methods = targetClass.getMethods();
+        for(Method i : methods) {
+            if(i.getName().equals("setId")) {
+                try {
+                    i.invoke(obj, id);
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+}

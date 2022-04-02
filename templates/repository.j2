@@ -1,4 +1,5 @@
 package {{ model | get_package_path('repository') }};
+
 import {{ model | get_package_path('model') }}.{{model.name}};
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;

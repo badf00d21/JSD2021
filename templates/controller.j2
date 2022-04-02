@@ -1,0 +1,26 @@
+package {{ model | get_package_path('controller') }};
+
+import {{ model | get_package_path('model') }}.{{model.name}};
+import {{projectGeneralInfo.packageRoot}}.generated.service.BaseServiceImpl;
+import {{projectGeneralInfo.packageRoot}}.generated.service.BaseService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import io.swagger.annotations.Api;
+
+/**
+ * @author {{ projectGeneralInfo.author }} - {{ projectGeneralInfo.date }}
+ */
+
+@RestController
+@RequestMapping("{{ model | pascal_case_to_hython}}")
+@Api(value = "{{ model.name }}", tags = { "{{ model.name }}" })
+public class {{ model.name }}Controller extends BaseController<{{ model.name }}> {
+
+    private BaseService<{{ model.name }}> service;
+
+    @Autowired
+    public void setBaseService(BaseServiceImpl<{{ model.name }}> service) {
+        this.service = service;
+        super.setBaseService(service);
+    }
+}

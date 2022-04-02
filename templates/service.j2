@@ -4,31 +4,21 @@ import {{ model | get_import_path('model') }}.{{ model.name }};
 import {{ model | get_import_path('repository') }}.{{ model.name }}Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author {{ projectGeneralInfo.author }} - {{ projectGeneralInfo.date }}
  */
 
 @Service
-public class {{ model.name }}Service {
+@Transactional
+public class {{ model.name }}ServiceImpl extends BaseServiceImpl<{{ model.name }}> {
+
+    private {{ model.name }}Repository repository;
 
     @Autowired
-    private {{ model.name }}Repository {{ model.name | camel_case }}Repository;
-
-    public {{ model.name }} save({{ model.name }} {{ model.name | camel_case }}) {
-        return {{ model.name | camel_case }}Repository.save({{ model.name | camel_case }});
-    }
-
-    public void delete({{ model.name }} {{ model.name | camel_case }}) {
-        {{ model.name | camel_case }}Repository.delete({{ model.name | camel_case }});
-    }
-
-    public {{ model.name }} getById(String _id) {
-        return {{ model.name | camel_case }}Repository.findById(_id).orElse(null);
-    }
-
-    public List<{{ model.name }}> findAll() {
-        return {{ model.name | camel_case }}Repository.findAll();
+    public {{ model.name }}ServiceImpl({{ model.name }}Repository repository) {
+        super(repository);
+        this.repository = repository;
     }
 }
