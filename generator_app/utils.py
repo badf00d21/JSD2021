@@ -31,9 +31,9 @@ def init_general_info(projectModel):
     }
 
 
-def init_project_directory_tree():
+def init_project_directory_tree(output_path):
     global PROJECT_DIRECTORY_TREE
-    PROJECT_DIRECTORY_TREE['root'] = join(CURRENT_DIR, '..', PROJECT_GENERAL_INFO['name'])
+    PROJECT_DIRECTORY_TREE['root'] = join(output_path, PROJECT_GENERAL_INFO['name'])
     PROJECT_DIRECTORY_TREE['main'] = join(PROJECT_DIRECTORY_TREE['root'], 'src/main/java/' + PROJECT_GENERAL_INFO['packageRoot'])
     PROJECT_DIRECTORY_TREE['resources'] = join(PROJECT_DIRECTORY_TREE['root'], 'src/main/resources/')
     PROJECT_DIRECTORY_TREE['test'] = join(PROJECT_DIRECTORY_TREE['root'], 'src/test/java/com.badf00d21.project')
@@ -51,9 +51,12 @@ def copy_static_files():
     copy_tree(from_directory, to_directory)
 
 
-def prepare_env(projectModel):
+def prepare_env(projectModel, output_path):
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
+        print('Created directories on path: ' + output_path + ' for generating project & dotexport.')
     init_general_info(projectModel)
-    init_project_directory_tree()
+    init_project_directory_tree(output_path)
     copy_static_files()
     for key in PROJECT_DIRECTORY_TREE:
         if not os.path.exists(PROJECT_DIRECTORY_TREE[key]):
@@ -83,12 +86,11 @@ def get_metamodel(path_to_grammar):
     metamodel = metamodel_from_file(path_to_grammar,
                                     classes=[BaseType],
                                     builtins=simple_types)
-
     return metamodel
 
 
-def export_to_dot(mm, mff):
-    dot_folder = join(CURRENT_DIR,'..', 'dotexport')
+def export_to_dot(mm, mff, path):
+    dot_folder = join(path, 'dotexport')
     if not os.path.exists(dot_folder):
         os.mkdir(dot_folder)
     metamodel_export(mm, join(dot_folder, 'meta-model.dot'))

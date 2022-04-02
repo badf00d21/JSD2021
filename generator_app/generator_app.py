@@ -1,35 +1,44 @@
 import jinja2 as j2
 from generator_app.utils import *
 import re
-import sys
+import argparse
 
 
 def main():
     grammar_file = join(dirname(__file__), 'model_meta_model', 'grammar.tx')
     model_file = join(dirname(__file__), 'model_meta_model', 'library-example-model.txt')
 
-    if len(sys.argv) == 1:
-        print('Command line arguments not provided.\n' \
-              'Loading default Grammar file: ' + grammar_file + '\n' \
-              'Loading default Model file: ' + model_file + '\n' \
-              'If you want to provide these files enter path to \n' \
-              'grammar as 1st argument and model as 2nd argument')
-    elif len(sys.argv) == 3:
-        grammar_file = sys.argv[1]
-        model_file = sys.argv[2]
-        print('Grammar file: ' + grammar_file + '\n'
-              'Model file: ' + model_file + '\n')
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-i", "--input-model-path", required=False,
+                    help="Input model of grammar, if not provided 'library-example-model.txt' from repository will be used")
+    ap.add_argument("-o", "--output-generated-path", required=False,
+                    help="Output path for generated SpringBoot project & 'dotexport' directory")
+    ap.add_argument("-s", "--show-grammar", required=False, default=False, action='store_true',
+                    help="Prints textX grammar to stdout.")
+    args = vars(ap.parse_args())
+
+    if args['show_grammar']:
+        with open(join(grammar_file), 'r') as f:
+            print('\nGrammar of: ' + grammar_file + '\n\n--------------')
+            print(f.read())
+            print('\n\n--------------')
+
+    output_path = ''
+    if args['output_generated_path']:
+        output_path = join(args['output_generated_path'])
     else:
-        print('Wrong number of arguments\n'
-              'Enter grammar as 1st argument and model as 2nd argument')
+        print('Please provide: -o --output-generated-path to generate project.')
         quit()
+    if args['input_model_path']:
+        print('Passed model file on path: ' + args['input_model_path'])
+        model_file = join(args['input_model'])
 
     meta_model = get_metamodel(grammar_file)
     print('Loading model_from_file: ' + model_file)
     model = meta_model.model_from_file(model_file)
-    export_to_dot(meta_model, model)
+    PROJECT_GENERAL_INFO = prepare_env(model, output_path)
+    export_to_dot(meta_model, model, output_path)
 
-    PROJECT_GENERAL_INFO = prepare_env(model)
     j2_environment = j2.Environment(
         loader=j2.FileSystemLoader(CURRENT_DIR),
         trim_blocks=True,
@@ -53,7 +62,8 @@ def main():
 
     def get_import_path(m, suffix=''):
         if suffix != 'model':
-            return PROJECT_GENERAL_INFO['packageRoot'] + '.generated.' + suffix.lower() + '.' + m.name + suffix.capitalize()
+            return PROJECT_GENERAL_INFO[
+                       'packageRoot'] + '.generated.' + suffix.lower() + '.' + m.name + suffix.capitalize()
         return PROJECT_GENERAL_INFO['packageRoot'] + '.generated.' + suffix.lower() + '.' + m.name
 
     def javatype(s):  # refactor
@@ -91,12 +101,14 @@ def main():
         file.write(spring_main_template.render(projectGeneralInfo=PROJECT_GENERAL_INFO, properties=None))
 
     with open(join(PROJECT_DIRECTORY_TREE['resources'], 'application.properties'), 'w') as file:
-        file.write(app_properties_template.render(properties=model.applicationPropertiesModel, projectGeneralInfo=PROJECT_GENERAL_INFO))
+        file.write(app_properties_template.render(properties=model.applicationPropertiesModel,
+                                                  projectGeneralInfo=PROJECT_GENERAL_INFO))
 
     for propEnv in model.applicationPropertiesModel.envModels:
-        with open(join(PROJECT_DIRECTORY_TREE['resources'], 'application-' + propEnv.envName + '.properties'), 'w') as file:
+        with open(join(PROJECT_DIRECTORY_TREE['resources'], 'application-' + propEnv.envName + '.properties'),
+                  'w') as file:
             file.write(app_properties_env_template.render(env=propEnv,
-                                                      projectGeneralInfo=PROJECT_GENERAL_INFO))
+                                                          projectGeneralInfo=PROJECT_GENERAL_INFO))
 
     with open(join(PROJECT_DIRECTORY_TREE['main'], 'Application.java'), 'w') as file:
         file.write(spring_main_template.render(projectGeneralInfo=PROJECT_GENERAL_INFO))
@@ -122,9 +134,9 @@ def main():
 
         if m.definitionType == 'define':
             with open(join(PROJECT_DIRECTORY_TREE['repository'], "%sRepository.java" % m.name), 'w') as fileRepository:
-                    fileRepository.write(repository_template.render(model=m, projectGeneralInfo=PROJECT_GENERAL_INFO))
+                fileRepository.write(repository_template.render(model=m, projectGeneralInfo=PROJECT_GENERAL_INFO))
             with open(join(PROJECT_DIRECTORY_TREE['controller'], "%sController.java" % m.name), 'w') as file:
-                    file.write(controller_template.render(model=m, projectGeneralInfo=PROJECT_GENERAL_INFO))
+                file.write(controller_template.render(model=m, projectGeneralInfo=PROJECT_GENERAL_INFO))
             with open(join(PROJECT_DIRECTORY_TREE['service'], "%sServiceImpl.java" % m.name), 'w') as file:
                 file.write(service_template.render(model=m, projectGeneralInfo=PROJECT_GENERAL_INFO))
 
