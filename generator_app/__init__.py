@@ -1,4 +1,6 @@
 import generator_app.generator_app as app
 
-if __name__ == '__main__':
+
+def call_generate():
+    print('call_generate')
     app.main()

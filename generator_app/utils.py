@@ -33,7 +33,7 @@ def init_general_info(projectModel):
 
 def init_project_directory_tree():
     global PROJECT_DIRECTORY_TREE
-    PROJECT_DIRECTORY_TREE['root'] = join(CURRENT_DIR, PROJECT_GENERAL_INFO['name'])
+    PROJECT_DIRECTORY_TREE['root'] = join(CURRENT_DIR, '..', PROJECT_GENERAL_INFO['name'])
     PROJECT_DIRECTORY_TREE['main'] = join(PROJECT_DIRECTORY_TREE['root'], 'src/main/java/' + PROJECT_GENERAL_INFO['packageRoot'])
     PROJECT_DIRECTORY_TREE['resources'] = join(PROJECT_DIRECTORY_TREE['root'], 'src/main/resources/')
     PROJECT_DIRECTORY_TREE['test'] = join(PROJECT_DIRECTORY_TREE['root'], 'src/test/java/com.badf00d21.project')
@@ -46,7 +46,7 @@ def init_project_directory_tree():
 
 
 def copy_static_files():
-    from_directory = './static_files/gradle_wrapper'
+    from_directory = join(CURRENT_DIR, './static_files/gradle_wrapper')
     to_directory = PROJECT_DIRECTORY_TREE['root']
     copy_tree(from_directory, to_directory)
 
@@ -88,7 +88,7 @@ def get_metamodel(path_to_grammar):
 
 
 def export_to_dot(mm, mff):
-    dot_folder = join(CURRENT_DIR, 'dotexport')
+    dot_folder = join(CURRENT_DIR,'..', 'dotexport')
     if not os.path.exists(dot_folder):
         os.mkdir(dot_folder)
     metamodel_export(mm, join(dot_folder, 'meta-model.dot'))

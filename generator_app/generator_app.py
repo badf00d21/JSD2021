@@ -1,12 +1,12 @@
 import jinja2 as j2
-from utils import *
+from generator_app.utils import *
 import re
 import sys
 
 
 def main():
-    grammar_file = 'grammar.tx'
-    model_file = 'library-example-model.txt'
+    grammar_file = join(dirname(__file__), 'model_meta_model', 'grammar.tx')
+    model_file = join(dirname(__file__), 'model_meta_model', 'library-example-model.txt')
 
     if len(sys.argv) == 1:
         print('Command line arguments not provided.\n' \
