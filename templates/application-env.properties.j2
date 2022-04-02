@@ -1,0 +1,14 @@
+
+# Generated: {{ projectGeneralInfo.author }} {{ projectGeneralInfo.date }}
+
+{% if env.dbUri %}
+data.mongodb.uri: {{ env.dbUri }}
+{% endif %}
+{% if env.dbName %}
+data.mongodb.database: {{ env.dbName }}
+{% endif %}
+{% if env.props|length > 0 %}
+    {% for p in env.props %}
+{{ p.propName }}={{ p.propVal }}
+    {% endfor %}
+{% endif %}

@@ -1,0 +1,14 @@
+
+# Generated: {{ projectGeneralInfo.author }} {{ projectGeneralInfo.date }}
+
+{% if properties.selectedEnv %}
+spring.profiles.active={{ properties.selectedEnv }}
+{% endif %}
+{% if properties.contextPath %}
+server.servlet.context-path={{properties.contextPath}}
+{% endif %}
+{% if properties.props|length > 0 %}
+    {% for p in properties.props %}
+{{ p.propName }}={{ p.propVal }}
+    {% endfor %}
+{% endif %}

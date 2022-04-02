@@ -54,6 +54,8 @@ if __name__ == '__main__':
     j2_environment.filters['pascal_case_to_hython'] = pascal_case_to_hython
 
     build_gradle_template = j2_environment.get_template('templates/build.gradle.j2')
+    app_properties_template = j2_environment.get_template('templates/application.properties.j2')
+    app_properties_env_template = j2_environment.get_template('templates/application-env.properties.j2')
     model_template = j2_environment.get_template('templates/model.j2')
     repository_template = j2_environment.get_template('templates/repository.j2')
     controller_template = j2_environment.get_template('templates/controller.j2')
@@ -63,26 +65,36 @@ if __name__ == '__main__':
     service_template = j2_environment.get_template('templates/service.j2')
     spring_main_template = j2_environment.get_template('templates/main_spring.j2')
     sprint_security_template = j2_environment.get_template('templates/config/security_config.j2')
+    with open(join(PROJECT_DIRECTORY_TREE['main'], 'Application.java'), 'w') as file:
+        file.write(spring_main_template.render(projectGeneralInfo=PROJECT_GENERAL_INFO))
+
+    with open(join(PROJECT_DIRECTORY_TREE['resources'], 'application.properties'), 'w') as file:
+        file.write(app_properties_template.render(properties=library_model.applicationPropertiesModel ,projectGeneralInfo=PROJECT_GENERAL_INFO))
+
+    for propEnv in library_model.applicationPropertiesModel.envModels:
+        with open(join(PROJECT_DIRECTORY_TREE['resources'], 'application-' + propEnv.envName + '.properties'), 'w') as file:
+            file.write(app_properties_env_template.render(env=propEnv,
+                                                      projectGeneralInfo=PROJECT_GENERAL_INFO))
+
+    with open(join(PROJECT_DIRECTORY_TREE['main'], 'Application.java'), 'w') as file:
+        file.write(spring_main_template.render(projectGeneralInfo=PROJECT_GENERAL_INFO))
+
+    with open(join(PROJECT_DIRECTORY_TREE['service'], 'BaseService.java'), 'w') as file:
+        file.write(base_service_template.render(projectGeneralInfo=PROJECT_GENERAL_INFO))
+
+    with open(join(PROJECT_DIRECTORY_TREE['service'], 'BaseServiceImpl.java'), 'w') as file:
+        file.write(base_service_impl_template.render(projectGeneralInfo=PROJECT_GENERAL_INFO))
+
+    with open(join(PROJECT_DIRECTORY_TREE['controller'], 'BaseController.java'), 'w') as file:
+        file.write(base_controller_template.render(projectGeneralInfo=PROJECT_GENERAL_INFO))
+
+    with open(join(PROJECT_DIRECTORY_TREE['config'], 'SecurityConfig.java'), 'w') as file:
+        file.write(sprint_security_template.render(projectGeneralInfo=PROJECT_GENERAL_INFO))
+
+    with open(join(PROJECT_DIRECTORY_TREE['root'], 'build.gradle'), 'w') as file:
+        file.write(build_gradle_template.render(projectGeneralInfo=PROJECT_GENERAL_INFO))
 
     for m in library_model.defModel.definitions:
-        with open(join(PROJECT_DIRECTORY_TREE['main'], 'Application.java'), 'w') as file:
-            file.write(spring_main_template.render(projectGeneralInfo=PROJECT_GENERAL_INFO))
-
-        with open(join(PROJECT_DIRECTORY_TREE['service'], 'BaseService.java'), 'w') as file:
-            file.write(base_service_template.render(projectGeneralInfo=PROJECT_GENERAL_INFO))
-
-        with open(join(PROJECT_DIRECTORY_TREE['service'], 'BaseServiceImpl.java'), 'w') as file:
-            file.write(base_service_impl_template.render(projectGeneralInfo=PROJECT_GENERAL_INFO))
-
-        with open(join(PROJECT_DIRECTORY_TREE['controller'], 'BaseController.java'), 'w') as file:
-            file.write(base_controller_template.render(projectGeneralInfo=PROJECT_GENERAL_INFO))
-
-        with open(join(PROJECT_DIRECTORY_TREE['config'], 'SecurityConfig.java'), 'w') as file:
-            file.write(sprint_security_template.render(projectGeneralInfo=PROJECT_GENERAL_INFO))
-
-        with open(join(PROJECT_DIRECTORY_TREE['root'], 'build.gradle'), 'w') as file:
-            file.write(build_gradle_template.render(projectName='ProjectName'))
-
         with open(join(PROJECT_DIRECTORY_TREE['model'], "%s.java" % m.name), 'w') as fileModel:
             fileModel.write(model_template.render(model=m, projectGeneralInfo=PROJECT_GENERAL_INFO))
 

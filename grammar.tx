@@ -47,6 +47,21 @@ GradleBuildModel:
 
 ApplicationProperties:
     'application ('
-        contextPath=/.+\b/?
+        ('contextPath is 'contextPath=/.+\b/)?
+        'selectedEnv is' selectedEnv=/.+\b/
+        props*=SinglePropModel
+        envModels*=EnvironmentModel
     ')'
+;
+
+EnvironmentModel:
+    'environment ' envName=ID '('
+    'dbUri is ' dbUri=/.+\b/
+    'db is ' dbName=ID
+    props*=SinglePropModel
+    ')'
+;
+
+SinglePropModel:
+    propName=ID ' is ' propVal=ID
 ;
