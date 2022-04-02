@@ -1,14 +1,35 @@
 import jinja2 as j2
-from utils import *
+from generator_app.utils import *
 import re
+import sys
 
 
-if __name__ == '__main__':
+def main():
+    grammar_file = join(dirname(__file__), 'model_meta_model', 'grammar.tx')
+    model_file = join(dirname(__file__), 'model_meta_model', 'library-example-model.txt')
 
-    mm = get_metamodel()
-    library_model = mm.model_from_file('library-example-model.txt')
+    if len(sys.argv) == 1:
+        print('Command line arguments not provided.\n' \
+              'Loading default Grammar file: ' + grammar_file + '\n' \
+              'Loading default Model file: ' + model_file + '\n' \
+              'If you want to provide these files enter path to \n' \
+              'grammar as 1st argument and model as 2nd argument')
+    elif len(sys.argv) == 3:
+        grammar_file = sys.argv[1]
+        model_file = sys.argv[2]
+        print('Grammar file: ' + grammar_file + '\n'
+              'Model file: ' + model_file + '\n')
+    else:
+        print('Wrong number of arguments\n'
+              'Enter grammar as 1st argument and model as 2nd argument')
+        quit()
 
-    PROJECT_GENERAL_INFO = prepare_env(library_model)
+    meta_model = get_metamodel(grammar_file)
+    print('Loading model_from_file: ' + model_file)
+    model = meta_model.model_from_file(model_file)
+    export_to_dot(meta_model, model)
+
+    PROJECT_GENERAL_INFO = prepare_env(model)
     j2_environment = j2.Environment(
         loader=j2.FileSystemLoader(CURRENT_DIR),
         trim_blocks=True,
@@ -65,13 +86,14 @@ if __name__ == '__main__':
     service_template = j2_environment.get_template('templates/service.j2')
     spring_main_template = j2_environment.get_template('templates/main_spring.j2')
     sprint_security_template = j2_environment.get_template('templates/config/security_config.j2')
+
     with open(join(PROJECT_DIRECTORY_TREE['main'], 'Application.java'), 'w') as file:
-        file.write(spring_main_template.render(projectGeneralInfo=PROJECT_GENERAL_INFO))
+        file.write(spring_main_template.render(projectGeneralInfo=PROJECT_GENERAL_INFO, properties=None))
 
     with open(join(PROJECT_DIRECTORY_TREE['resources'], 'application.properties'), 'w') as file:
-        file.write(app_properties_template.render(properties=library_model.applicationPropertiesModel ,projectGeneralInfo=PROJECT_GENERAL_INFO))
+        file.write(app_properties_template.render(properties=model.applicationPropertiesModel, projectGeneralInfo=PROJECT_GENERAL_INFO))
 
-    for propEnv in library_model.applicationPropertiesModel.envModels:
+    for propEnv in model.applicationPropertiesModel.envModels:
         with open(join(PROJECT_DIRECTORY_TREE['resources'], 'application-' + propEnv.envName + '.properties'), 'w') as file:
             file.write(app_properties_env_template.render(env=propEnv,
                                                       projectGeneralInfo=PROJECT_GENERAL_INFO))
@@ -94,7 +116,7 @@ if __name__ == '__main__':
     with open(join(PROJECT_DIRECTORY_TREE['root'], 'build.gradle'), 'w') as file:
         file.write(build_gradle_template.render(projectGeneralInfo=PROJECT_GENERAL_INFO))
 
-    for m in library_model.defModel.definitions:
+    for m in model.defModel.definitions:
         with open(join(PROJECT_DIRECTORY_TREE['model'], "%s.java" % m.name), 'w') as fileModel:
             fileModel.write(model_template.render(model=m, projectGeneralInfo=PROJECT_GENERAL_INFO))
 
@@ -106,3 +128,6 @@ if __name__ == '__main__':
             with open(join(PROJECT_DIRECTORY_TREE['service'], "%sServiceImpl.java" % m.name), 'w') as file:
                 file.write(service_template.render(model=m, projectGeneralInfo=PROJECT_GENERAL_INFO))
 
+
+if __name__ == '__main__':
+    main()
