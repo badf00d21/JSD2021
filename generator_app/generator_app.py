@@ -2,7 +2,7 @@ import jinja2 as j2
 from generator_app.utils import *
 import re
 import argparse
-
+import generator_app.validators as validators
 
 def main():
     grammar_file = join(dirname(__file__), 'model_meta_model', 'grammar.tx')
@@ -31,11 +31,13 @@ def main():
         quit()
     if args['input_model_path']:
         print('Passed model file on path: ' + args['input_model_path'])
-        model_file = join(args['input_model'])
+        model_file = join(args['input_model_path'])
 
     meta_model = get_metamodel(grammar_file)
     print('Loading model_from_file: ' + model_file)
     model = meta_model.model_from_file(model_file)
+    validators.semantic_model_check(model)
+
     PROJECT_GENERAL_INFO = prepare_env(model, output_path)
     export_to_dot(meta_model, model, output_path)
 
@@ -139,7 +141,7 @@ def main():
                 file.write(controller_template.render(model=m, projectGeneralInfo=PROJECT_GENERAL_INFO))
             with open(join(PROJECT_DIRECTORY_TREE['service'], "%sServiceImpl.java" % m.name), 'w') as file:
                 file.write(service_template.render(model=m, projectGeneralInfo=PROJECT_GENERAL_INFO))
-
+    print('\n\033[1m\033[92mWell done, your project and dotexport are geenrated on provided output path!\033[0m')
 
 if __name__ == '__main__':
     main()

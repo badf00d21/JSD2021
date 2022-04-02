@@ -12,7 +12,7 @@ setup(
     include_package_data=True,
     author='badf00d21',
     author_email='jiricekova31@gmail.com',
-    description='DSL for generating SpringBoot project. \n Petar Makevic E2/144-2019 ',
+    description='DSL for generating SpringBoot project.\n\nMade by: Petar Makevic E2/144-2019 \n',
     entry_points={
         'console_scripts': [
             'jsd-gen-badf00d21=generator_app:call_generate'
