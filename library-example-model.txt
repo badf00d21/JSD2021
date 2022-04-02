@@ -1,3 +1,8 @@
+gradle (
+    groupId is com.badf00d21
+    artifactId is spring-boot-generated-app
+    projectName is SpringBootMongoGenerated
+)
 
 define Library (
     name of String

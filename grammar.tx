@@ -1,4 +1,5 @@
 Project:
+    gradleBuildModel=GradleBuildModel
     defModel=DefinitionModel
 ;
 
@@ -33,6 +34,12 @@ Type:
     Definition | BaseType
 ;
 
-CollectionRule:
-    '^\[.+\]$'
+GradleBuildModel:
+    'gradle ('
+        'groupId is' groupId=/.+\b/
+        'artifactId is' artifactId=/.+\b/
+        ('projectVersion is' appVersion=/.+\b/)?
+        'projectName is' projectName=/.+\b/
+    ')'
 ;
+

@@ -7,22 +7,33 @@ from datetime import datetime
 from distutils.dir_util import copy_tree
 
 CURRENT_DIR = dirname(__file__)
-# TODO scpecify by model
-GROUP = 'com.badf00d21'
-ARTEFACT = 'projectname'
-
-PROJECT_PACKAGE_ROOT = GROUP + '.' + ARTEFACT
-PROJECT_GENERAL_INFO = {
-    'author': 'JSD SpringBoot generator by Petar Makevic',
-    'date': datetime.now().strftime('%d.%m.%y'),
-    'packageRoot': PROJECT_PACKAGE_ROOT
-}
-
 PROJECT_DIRECTORY_TREE = {}
+PROJECT_GENERAL_INFO = {}
+
+def init_general_info(projectModel):
+    global PROJECT_GENERAL_INFO
+    groupId = projectModel.gradleBuildModel.groupId
+    artifact = projectModel.gradleBuildModel.artifactId
+    name = projectModel.gradleBuildModel.projectName
+    version = '1.0.0'
+    if projectModel.gradleBuildModel.appVersion != '':
+        version = projectModel.gradleBuildModel.appVersion
+
+    project_package_root = groupId + '.' + name.lower()
+    PROJECT_GENERAL_INFO = {
+        'author': 'JSD SpringBoot generator by Petar Makevic',
+        'date': datetime.now().strftime('%d.%m.%y'),
+        'packageRoot': project_package_root,
+        'groupId': groupId,
+        'artifactId': artifact,
+        'name': name,
+        'version': version
+    }
 
 
 def init_project_directory_tree():
-    PROJECT_DIRECTORY_TREE['root'] = join(CURRENT_DIR, 'GeneratedProject')
+    global PROJECT_DIRECTORY_TREE
+    PROJECT_DIRECTORY_TREE['root'] = join(CURRENT_DIR, PROJECT_GENERAL_INFO['name'])
     PROJECT_DIRECTORY_TREE['main'] = join(PROJECT_DIRECTORY_TREE['root'], 'src/main/java/' + PROJECT_GENERAL_INFO['packageRoot'])
     PROJECT_DIRECTORY_TREE['resources'] = join(PROJECT_DIRECTORY_TREE['root'], 'src/main/resources/' + PROJECT_GENERAL_INFO['packageRoot'])
     PROJECT_DIRECTORY_TREE['test'] = join(PROJECT_DIRECTORY_TREE['root'], 'src/test/java/com.badf00d21.project')
@@ -40,21 +51,23 @@ def copy_static_files():
     copy_tree(from_directory, to_directory)
 
 
-if __name__ == '__main__':
-    init_project_directory_tree()
-    for key in PROJECT_DIRECTORY_TREE:
-        if not os.path.exists(PROJECT_DIRECTORY_TREE[key]):
-            os.makedirs(PROJECT_DIRECTORY_TREE[key])
-            print('Generated project directory on path: ', PROJECT_DIRECTORY_TREE[key])
+# if __name__ == '__main__':
+#     init_project_directory_tree()
+#     for key in PROJECT_DIRECTORY_TREE:
+#         if not os.path.exists(PROJECT_DIRECTORY_TREE[key]):
+#             os.makedirs(PROJECT_DIRECTORY_TREE[key])
+#             print('Generated project directory on path: ', PROJECT_DIRECTORY_TREE[key])
 
 
-def prepare_env():
+def prepare_env(projectModel):
+    init_general_info(projectModel)
     init_project_directory_tree()
     copy_static_files()
     for key in PROJECT_DIRECTORY_TREE:
         if not os.path.exists(PROJECT_DIRECTORY_TREE[key]):
             os.makedirs(PROJECT_DIRECTORY_TREE[key])
             print('Generated project directory on path: ', PROJECT_DIRECTORY_TREE[key])
+    return PROJECT_GENERAL_INFO
 
 
 class BaseType(object):
