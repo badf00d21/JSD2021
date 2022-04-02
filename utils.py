@@ -1,8 +1,8 @@
 # author: badf00d21
-
+import os
 from os.path import dirname, join
 from textx import metamodel_from_file
-import os
+from textx.export import metamodel_export, model_export
 from datetime import datetime
 from distutils.dir_util import copy_tree
 
@@ -51,14 +51,6 @@ def copy_static_files():
     copy_tree(from_directory, to_directory)
 
 
-# if __name__ == '__main__':
-#     init_project_directory_tree()
-#     for key in PROJECT_DIRECTORY_TREE:
-#         if not os.path.exists(PROJECT_DIRECTORY_TREE[key]):
-#             os.makedirs(PROJECT_DIRECTORY_TREE[key])
-#             print('Generated project directory on path: ', PROJECT_DIRECTORY_TREE[key])
-
-
 def prepare_env(projectModel):
     init_general_info(projectModel)
     init_project_directory_tree()
@@ -80,19 +72,28 @@ class BaseType(object):
         return self.name
 
 
-def get_metamodel():
+def get_metamodel(path_to_grammar):
     simple_types = {
         'int': BaseType(None, 'int'),
         'String': BaseType(None, 'String'),
         'Long': BaseType(None, 'Long'),
         'boolean': BaseType(None, 'boolean')
     }
-    metamodel = metamodel_from_file('grammar.tx',
+    print('Loading metamodel_from_file: ' + path_to_grammar)
+    metamodel = metamodel_from_file(path_to_grammar,
                                     classes=[BaseType],
                                     builtins=simple_types)
 
     return metamodel
 
+
+def export_to_dot(mm, mff):
+    dot_folder = join(CURRENT_DIR, 'dotexport')
+    if not os.path.exists(dot_folder):
+        os.mkdir(dot_folder)
+    metamodel_export(mm, join(dot_folder, 'meta-model.dot'))
+    model_export(mff, join(dot_folder, 'model.dot'))
+    print('.dot files generated in:' + dot_folder)
 
 # if __name__ == '__main__':
 #

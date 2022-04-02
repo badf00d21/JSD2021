@@ -1,0 +1,59 @@
+
+    digraph textX {
+    fontname = "Bitstream Vera Sans"
+    fontsize = 8
+    node[
+        shape=record,
+        style=filled,
+        fillcolor=aliceblue
+    ]
+    nodesep = 0.3
+    edge[dir=black,arrowtail=empty]
+
+
+140530088147520[ label="{Project|}"]
+
+140530088151536[ label="{DefinitionModel|}"]
+
+140530088154944[ label="{Definition|definitionType: DefinitionType\lname: ID\l}"]
+
+140530088158928[ label="{Attribute|name: ID\lrelationType: AttributeRelationType\l}"]
+
+140530087971952[ label="{BaseType|name: ID\l}"]
+
+140530088166896[ label="{*Type|}"]
+
+140530088169728[ label="{GradleBuildModel|groupId: STRING\lartifactId: STRING\lappVersion: STRING\lprojectName: STRING\l}"]
+
+140530088175440[ label="{ApplicationProperties|contextPath: STRING\lselectedEnv: STRING\l}"]
+
+140530088180000[ label="{EnvironmentModel|envName: ID\ldbUri: STRING\ldbName: ID\l}"]
+
+140530088184560[ label="{SinglePropModel|propName: ID\lpropVal: ID\l}"]
+
+
+
+140530088147520 -> 140530088175440[arrowtail=diamond, dir=both, headlabel="applicationPropertiesModel "]
+140530088147520 -> 140530088169728[arrowtail=diamond, dir=both, headlabel="gradleBuildModel "]
+140530088147520 -> 140530088151536[arrowtail=diamond, dir=both, headlabel="defModel "]
+140530088151536 -> 140530087971952[arrowtail=diamond, dir=both, headlabel="types 0..*"]
+140530088151536 -> 140530088154944[arrowtail=diamond, dir=both, headlabel="definitions 1..*"]
+140530088154944 -> 140530088158928[arrowtail=diamond, dir=both, headlabel="attributes 1..*"]
+140530088158928 -> 140530088166896[headlabel="type "]
+140530088158928 -> 140530088166896[headlabel="collectionType "]
+140530088166896 -> 140530088154944 [dir=back]
+140530088166896 -> 140530087971952 [dir=back]
+140530088175440 -> 140530088184560[arrowtail=diamond, dir=both, headlabel="props 0..*"]
+140530088175440 -> 140530088180000[arrowtail=diamond, dir=both, headlabel="envModels 0..*"]
+140530088180000 -> 140530088184560[arrowtail=diamond, dir=both, headlabel="props 0..*"]
+match_rules [ shape=plaintext, label=< <table>
+	<tr>
+		<td><b>AttributeRelationType</b></td><td>ref|of</td>
+	</tr>
+	<tr>
+		<td><b>DefinitionType</b></td><td>define|draft</td>
+	</tr>
+</table> >]
+
+
+}
