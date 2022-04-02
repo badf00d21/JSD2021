@@ -22,11 +22,11 @@ setup(
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Topic :: DSL Tools',
-        'License :: MIT License',
+        'License :: OSI Approved :: MIT License',
         'Environment :: Console',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
-        'Programming Language :: PyThon :: 3.8',
+        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Operating System :: OS Independent'
     ],
