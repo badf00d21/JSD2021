@@ -1,4 +1,5 @@
 Project:
+    applicationPropertiesModel=ApplicationProperties
     gradleBuildModel=GradleBuildModel
     defModel=DefinitionModel
 ;
@@ -43,3 +44,9 @@ GradleBuildModel:
     ')'
 ;
 
+
+ApplicationProperties:
+    'application ('
+        contextPath=/.+\b/?
+    ')'
+;

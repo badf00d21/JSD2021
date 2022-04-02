@@ -1,3 +1,7 @@
+application (
+    contextPath /api-v1
+)
+
 gradle (
     groupId is com.badf00d21
     artifactId is spring-boot-generated-app
