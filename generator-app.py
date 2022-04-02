@@ -4,8 +4,7 @@ import re
 import sys
 
 
-if __name__ == '__main__':
-
+def main():
     grammar_file = 'grammar.tx'
     model_file = 'library-example-model.txt'
 
@@ -129,3 +128,6 @@ if __name__ == '__main__':
             with open(join(PROJECT_DIRECTORY_TREE['service'], "%sServiceImpl.java" % m.name), 'w') as file:
                 file.write(service_template.render(model=m, projectGeneralInfo=PROJECT_GENERAL_INFO))
 
+
+if __name__ == '__main__':
+    main()

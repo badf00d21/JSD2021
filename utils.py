@@ -95,14 +95,3 @@ def export_to_dot(mm, mff):
     model_export(mff, join(dot_folder, 'model.dot'))
     print('.dot files generated in:' + dot_folder)
 
-# if __name__ == '__main__':
-#
-#     mm = get_metamodel()
-#     dot_folder = join(CURRENT_DIR, 'dotexport')
-#     if not os.path.exists(dot_folder):
-#         os.mkdir(dot_folder)
-#     metamodel_export(mm, join(dot_folder, 'meta-model.dot'))
-#
-#     model = mm.model_from_file('library-example-model.txt')
-#     model_export(model, join(dot_folder, 'model.dot'))
-
