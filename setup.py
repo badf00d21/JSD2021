@@ -21,7 +21,7 @@ setup(
     install_requires=['Jinja2', 'textX-dev'],
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
-        'Topic :: DSL Tools',
+        'Topic :: Software Development :: Code Generators',
         'License :: OSI Approved :: MIT License',
         'Environment :: Console',
         'Programming Language :: Python :: 3.6',
