@@ -1,0 +1,67 @@
+Project:
+    applicationPropertiesModel=ApplicationProperties
+    gradleBuildModel=GradleBuildModel
+    defModel=DefinitionModel
+;
+
+DefinitionModel:
+    types*=BaseType
+    definitions+=Definition
+;
+
+Definition:
+    definitionType=DefinitionType name=ID '('
+        attributes+=Attribute
+    ')'
+;
+
+DefinitionType:
+    'define' | 'draft'
+;
+
+Attribute:
+   name=ID  relationType=AttributeRelationType ((type=[Type]) | ('['collectionType=[Type]']'))
+;
+
+AttributeRelationType:
+    'ref' | 'of'
+;
+
+BaseType:
+    'type' name=ID
+;
+
+Type:
+    Definition | BaseType
+;
+
+GradleBuildModel:
+    'gradle ('
+        'groupId is' groupId=/.+\b/
+        'artifactId is' artifactId=/.+\b/
+        ('projectVersion is' appVersion=/.+\b/)?
+        'projectName is' projectName=/.+\b/
+    ')'
+;
+
+
+ApplicationProperties:
+    'application ('
+        ('contextPath is 'contextPath=/.+\b/)?
+        'selectedEnv is' selectedEnv=/.+\b/
+        props*=SinglePropModel
+        envModels*=EnvironmentModel
+    ')'
+;
+
+EnvironmentModel:
+    'environment ' envName=ID '('
+    'dbUri is ' dbUri=/.+\b/
+    'db is ' dbName=ID
+    props*=SinglePropModel
+    ')'
+;
+
+SinglePropModel:
+    propName=ID ' is ' propVal=ID
+;
