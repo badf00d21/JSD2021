@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='jsd-gen',
+    name='jsd-gen-badf00d21',
     version='1.0.0',
     packages=find_packages(),
     url='https://github.com/badf00d21/JSD2021',
@@ -15,7 +15,7 @@ setup(
     description='DSL for generating SpringBoot project. \n Petar Makevic E2/144-2019 ',
     entry_points={
         'console_scripts': [
-            'jsd-gen=generator_app:call_generate'
+            'jsd-gen-badf00d21=generator_app:call_generate'
         ]
     },
     install_requires=['Jinja2', 'textX-dev'],
