@@ -1,4 +1,9 @@
 from setuptools import setup, find_packages
+from pathlib import Path
+
+# read the contents of your README file
+this_directory = Path(__file__).parent
+long_description = (this_directory / 'README.md').read_text()
 
 setup(
     name='jsd-gen-badf00d21',
@@ -30,4 +35,6 @@ setup(
         'Programming Language :: Python :: 3.9',
         'Operating System :: OS Independent'
     ],
+    long_description=long_description,
+    long_description_content_type='text/markdown'
 )
