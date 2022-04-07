@@ -48,6 +48,29 @@ The **Gradle Wrapper** will also be included by default, to reduce installation 
 ###### Example
 
 ```
+application (
+    contextPath is /api-v1
+    selectedEnv is dev
+    environment dev (
+        dbUri is mongodb://127.0.0.1:27017
+        db is LibraryDB_dev
+    )
+    environment test (
+        dbUri is mongodb://147.27.5.11:1090
+        db is LibraryDB_test
+    )
+    environment prod (
+        dbUri is mongodb://211.67.8.0:8899
+        db is LibraryDB_prod
+    )
+)
+
+gradle (
+    groupId is com.badf00d21
+    artifactId is spring-boot-generated-app
+    projectName is SpringBootMongoGenerated
+)
+
 define Library (
     name of String
     state of String
@@ -65,15 +88,15 @@ define Librarian (
     age of int
     idNumber of String
     worksIn ref Library
-    reoles of [String]
+    roles of [String]
 )
 
 define Record (
     type of String
     title of String
-    author of String
+    authors of String
     genre of String
-    publisher of String
+    publisher of [String]
     pubYear of int
     pubPlace of String
     dimensions of BookDimension
