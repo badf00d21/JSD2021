@@ -34,14 +34,14 @@ def init_general_info(projectModel):
 def init_project_directory_tree(output_path):
     global PROJECT_DIRECTORY_TREE
     PROJECT_DIRECTORY_TREE['root'] = join(output_path, PROJECT_GENERAL_INFO['name'])
-    PROJECT_DIRECTORY_TREE['main'] = join(PROJECT_DIRECTORY_TREE['root'], 'src/main/java/' + PROJECT_GENERAL_INFO['packageRoot'])
+    PROJECT_DIRECTORY_TREE['main'] = join(PROJECT_DIRECTORY_TREE['root'], 'src/main/java/' + PROJECT_GENERAL_INFO['packageRoot'].replace('.', '/'))
     PROJECT_DIRECTORY_TREE['resources'] = join(PROJECT_DIRECTORY_TREE['root'], 'src/main/resources/')
-    PROJECT_DIRECTORY_TREE['test'] = join(PROJECT_DIRECTORY_TREE['root'], 'src/test/java/com.badf00d21.project')
+    PROJECT_DIRECTORY_TREE['test'] = join(PROJECT_DIRECTORY_TREE['root'], 'src/test/java/' + PROJECT_GENERAL_INFO['packageRoot'].replace('.', '/'))
     PROJECT_DIRECTORY_TREE['generated'] = join(PROJECT_DIRECTORY_TREE['main'], 'generated')
     PROJECT_DIRECTORY_TREE['model'] = join(PROJECT_DIRECTORY_TREE['generated'], 'model')
     PROJECT_DIRECTORY_TREE['service'] = join(PROJECT_DIRECTORY_TREE['generated'], 'service')
-    PROJECT_DIRECTORY_TREE['config'] = join(PROJECT_DIRECTORY_TREE['generated'], 'config')
-    PROJECT_DIRECTORY_TREE['repository'] = join(PROJECT_DIRECTORY_TREE['generated'], 'repository')
+    PROJECT_DIRECTORY_TREE['config'] = join(PROJECT_DIRECTORY_TREE['main'], 'config')
+    PROJECT_DIRECTORY_TREE['repository'] = join(PROJECT_DIRECTORY_TREE['main'], 'repository')
     PROJECT_DIRECTORY_TREE['controller'] = join(PROJECT_DIRECTORY_TREE['generated'], 'controller')
 
 
