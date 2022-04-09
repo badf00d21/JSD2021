@@ -32,6 +32,10 @@ define Library (
     isUniversity of boolean
 )
 
+define SomeEntity (
+    someProp of String
+)
+
 define Librarian (
     firstName of String
     lastName of String

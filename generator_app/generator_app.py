@@ -3,6 +3,8 @@ from generator_app.utils import *
 import re
 import argparse
 import generator_app.validators as validators
+from pathlib import Path
+
 
 def main():
     grammar_file = join(dirname(__file__), 'model_meta_model', 'grammar.tx')
@@ -115,13 +117,13 @@ def main():
     with open(join(PROJECT_DIRECTORY_TREE['main'], 'Application.java'), 'w') as file:
         file.write(spring_main_template.render(projectGeneralInfo=PROJECT_GENERAL_INFO))
 
-    with open(join(PROJECT_DIRECTORY_TREE['service'], 'BaseService.java'), 'w') as file:
+    with open(join(PROJECT_DIRECTORY_TREE['service_gen'], 'BaseService.java'), 'w') as file:
         file.write(base_service_template.render(projectGeneralInfo=PROJECT_GENERAL_INFO))
 
-    with open(join(PROJECT_DIRECTORY_TREE['service'], 'BaseServiceImpl.java'), 'w') as file:
+    with open(join(PROJECT_DIRECTORY_TREE['service_gen'], 'BaseServiceImpl.java'), 'w') as file:
         file.write(base_service_impl_template.render(projectGeneralInfo=PROJECT_GENERAL_INFO))
 
-    with open(join(PROJECT_DIRECTORY_TREE['controller'], 'BaseController.java'), 'w') as file:
+    with open(join(PROJECT_DIRECTORY_TREE['controller_gen'], 'BaseController.java'), 'w') as file:
         file.write(base_controller_template.render(projectGeneralInfo=PROJECT_GENERAL_INFO))
 
     with open(join(PROJECT_DIRECTORY_TREE['config'], 'SecurityConfig.java'), 'w') as file:
@@ -135,13 +137,23 @@ def main():
             fileModel.write(model_template.render(model=m, projectGeneralInfo=PROJECT_GENERAL_INFO))
 
         if m.definitionType == 'define':
-            with open(join(PROJECT_DIRECTORY_TREE['repository'], "%sRepository.java" % m.name), 'w') as fileRepository:
-                fileRepository.write(repository_template.render(model=m, projectGeneralInfo=PROJECT_GENERAL_INFO))
-            with open(join(PROJECT_DIRECTORY_TREE['controller'], "%sController.java" % m.name), 'w') as file:
-                file.write(controller_template.render(model=m, projectGeneralInfo=PROJECT_GENERAL_INFO))
-            with open(join(PROJECT_DIRECTORY_TREE['service'], "%sServiceImpl.java" % m.name), 'w') as file:
-                file.write(service_template.render(model=m, projectGeneralInfo=PROJECT_GENERAL_INFO))
+
+            rep_path = join(PROJECT_DIRECTORY_TREE['repository'], "%sRepository.java" % m.name)
+            if not Path(rep_path).is_file():
+                with open(rep_path, 'w') as fileRepository:
+                    fileRepository.write(repository_template.render(model=m, projectGeneralInfo=PROJECT_GENERAL_INFO))
+
+            contr_path = join(PROJECT_DIRECTORY_TREE['controller'], "%sController.java" % m.name)
+            if not Path(contr_path).is_file():
+                with open(contr_path, 'w') as file:
+                    file.write(controller_template.render(model=m, projectGeneralInfo=PROJECT_GENERAL_INFO))
+
+            service_path = join(PROJECT_DIRECTORY_TREE['service'], "%sServiceImpl.java" % m.name)
+            if not Path(service_path).is_file():
+                with open(service_path, 'w') as file:
+                    file.write(service_template.render(model=m, projectGeneralInfo=PROJECT_GENERAL_INFO))
     print('\n\033[1m\033[92mWell done, your project and dotexport are geenrated on provided output path!\033[0m')
+
 
 if __name__ == '__main__':
     main()

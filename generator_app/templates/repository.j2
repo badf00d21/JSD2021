@@ -1,4 +1,4 @@
-package {{ model | get_package_path('repository') }};
+package {{ projectGeneralInfo.packageRoot }}.repository;
 
 import {{ model | get_package_path('model') }}.{{model.name}};
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -11,4 +11,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface {{model.name + 'Repository'}} extends MongoRepository<{{model.name}}, String> {
 
+
+    /**
+     * Please note that this is ONE-TIME generated repository class, and new generate will not overwrite it,
+     * Write new repository functions HERE
+     */
 }

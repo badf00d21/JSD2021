@@ -1,7 +1,8 @@
-package {{ model | get_package_path('service') }};
+package {{ projectGeneralInfo.packageRoot }}.service;
 
+import {{ projectGeneralInfo.packageRoot }}.generated.service.BaseServiceImpl;
 import {{ model | get_import_path('model') }}.{{ model.name }};
-import {{ model | get_import_path('repository') }}.{{ model.name }}Repository;
+import {{ projectGeneralInfo.packageRoot }}.repository.{{ model.name }}Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,11 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class {{ model.name }}ServiceImpl extends BaseServiceImpl<{{ model.name }}> {
 
-    private {{ model.name }}Repository repository;
-
     @Autowired
     public {{ model.name }}ServiceImpl({{ model.name }}Repository repository) {
         super(repository);
-        this.repository = repository;
     }
+
+    /**
+     * Note that this is ONE-TIME generated service class, that contains all BaseService methods,
+     * plase override or write new ones HERE if it's needed
+     */
 }

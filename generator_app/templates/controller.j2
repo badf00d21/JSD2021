@@ -1,7 +1,8 @@
-package {{ model | get_package_path('controller') }};
+package {{ projectGeneralInfo.packageRoot }}.controller;
 
 import {{ model | get_package_path('model') }}.{{model.name}};
 import {{projectGeneralInfo.packageRoot}}.generated.service.BaseServiceImpl;
+import {{projectGeneralInfo.packageRoot}}.generated.controller.BaseController;
 import {{projectGeneralInfo.packageRoot}}.generated.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,4 +24,10 @@ public class {{ model.name }}Controller extends BaseController<{{ model.name }}>
         this.service = service;
         super.setBaseService(service);
     }
+
+
+    /**
+     * Please note that this is ONE-TIME generated Controller with end-points from BaseController
+     * Feel free to add new end-points HERE
+     */
 }

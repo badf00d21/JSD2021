@@ -39,10 +39,12 @@ def init_project_directory_tree(output_path):
     PROJECT_DIRECTORY_TREE['test'] = join(PROJECT_DIRECTORY_TREE['root'], 'src/test/java/' + PROJECT_GENERAL_INFO['packageRoot'].replace('.', '/'))
     PROJECT_DIRECTORY_TREE['generated'] = join(PROJECT_DIRECTORY_TREE['main'], 'generated')
     PROJECT_DIRECTORY_TREE['model'] = join(PROJECT_DIRECTORY_TREE['generated'], 'model')
-    PROJECT_DIRECTORY_TREE['service'] = join(PROJECT_DIRECTORY_TREE['generated'], 'service')
+    PROJECT_DIRECTORY_TREE['service_gen'] = join(PROJECT_DIRECTORY_TREE['generated'], 'service')
+    PROJECT_DIRECTORY_TREE['service'] = join(PROJECT_DIRECTORY_TREE['main'], 'service')
     PROJECT_DIRECTORY_TREE['config'] = join(PROJECT_DIRECTORY_TREE['main'], 'config')
     PROJECT_DIRECTORY_TREE['repository'] = join(PROJECT_DIRECTORY_TREE['main'], 'repository')
-    PROJECT_DIRECTORY_TREE['controller'] = join(PROJECT_DIRECTORY_TREE['generated'], 'controller')
+    PROJECT_DIRECTORY_TREE['controller_gen'] = join(PROJECT_DIRECTORY_TREE['generated'], 'controller')
+    PROJECT_DIRECTORY_TREE['controller'] = join(PROJECT_DIRECTORY_TREE['main'], 'controller')
 
 
 def copy_static_files():
